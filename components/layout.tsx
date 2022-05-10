@@ -5,9 +5,12 @@ import utilStyles from '../styles/utils.module.css'
 import Link from 'next/link'
 
 const name = 'Aaron Honculada'
-export const siteTitle = 'Next.js Sample Website'
+export const siteTitle = 'Next.js Website'
 
-export default function Layout({ children, home }): {
+export default function Layout({ 
+    children, 
+    home 
+}: {
 children: React.ReactNode
 home?: boolean
 }) {
