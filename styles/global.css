@@ -26,3 +26,8 @@ img {
     max-width: 100%;
     display: block;
 }
+
+pre {
+    max-width: 100%; /* Ensures the code block does not exceed the container width */
+    overflow-x: auto; /* Adds a horizontal scrollbar if necessary */
+}

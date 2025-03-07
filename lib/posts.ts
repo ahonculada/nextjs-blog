@@ -1,7 +1,6 @@
 import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
-import { remark } from 'remark'
 import { unified } from 'unified'
 import remarkParse from 'remark-parse'
 import remarkGfm from 'remark-gfm'
@@ -9,7 +8,8 @@ import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import rehypeStringify from 'rehype-stringify'
 import remarkRehype from 'remark-rehype'
-import html from 'remark-html'
+import rehypePrettyCode from 'rehype-pretty-code'
+import { transformerCopyButton } from '@rehype-pretty/transformers'
 
 
 const postsDirectory = path.join(process.cwd(), 'posts')
@@ -83,6 +83,12 @@ export async function getPostData(id: string) {
         .use(remarkMath)
         .use(remarkRehype)
         .use(rehypeKatex)
+        .use(rehypePrettyCode, {
+            theme: 'everforest-dark',
+            transformers: [transformerCopyButton({
+                visibility: 'hover',
+            })],
+        })
         .use(rehypeStringify)
         .process(matterResult.content);
     const contentHtml = processedContent.toString()
