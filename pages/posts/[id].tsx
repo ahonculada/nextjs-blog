@@ -7,8 +7,6 @@ import { GetStaticProps, GetStaticPaths } from 'next'
 import React from 'react'
 import 'katex/dist/katex.min.css'
 import { renderToString } from 'katex'
-import { remark } from 'remark'
-import html from 'remark-html'
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
     const postData = await getPostData(params.id as string);
@@ -26,12 +24,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
         paths,
         fallback: false,
     };
-}
-
-// Utility function to convert Markdown to HTML
-async function markdownToHtml(markdown: string) {
-    const result = await remark().use(html).process(markdown);
-    return result.toString();
 }
 
 const renderContent = (contentHtml: string) => {
@@ -62,15 +54,6 @@ export default function Post({
         contentHtml: string
     }
 }) {
-    const [htmlContent, setHtmlContent] = React.useState('');
-
-    React.useEffect(() => {
-        // Convert Markdown to HTML
-        markdownToHtml(postData.contentHtml).then((html) => {
-            setHtmlContent(renderContent(html));
-        });
-    }, [postData.contentHtml]);
-
     return (
         <Layout>
             <Head>
@@ -81,7 +64,7 @@ export default function Post({
                 <div className={utilStyles.lightText}>
                     <Date dateString={postData.date} />
                 </div>
-                <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
+                <div dangerouslySetInnerHTML={{ __html: renderContent(postData.contentHtml) }} />
             </article>
         </Layout>
     )
