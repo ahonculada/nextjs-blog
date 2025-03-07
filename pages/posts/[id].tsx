@@ -28,18 +28,27 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 const renderContent = (contentHtml: string) => {
     // Check for LaTeX delimiters
-    const hasLaTeX = /\$.*?\$|\\\[.*?\\\]/.test(contentHtml);
+    const hasLaTeX = /\$.*?\$|\\\[.*?\\\]|\$\$[\s\S]*?\$\$/m.test(contentHtml);
 
     if (hasLaTeX) {
         // Render LaTeX using KaTeX
-        return contentHtml.replace(/\$([^$]+)\$/g, (match, p1) => {
-            try {
-                return renderToString(p1, { throwOnError: false });
-            } catch (error) {
-                console.error('Error rendering LaTeX:', error);
-                return match;
-            }
-        });
+        return contentHtml
+            .replace(/\$\$([\s\S]*?)\$\$/g, (match, p1) => {
+                try {
+                    return renderToString(p1, { displayMode: true, throwOnError: false });
+                } catch (error) {
+                    console.error('Error rendering block LaTeX:', error);
+                    return match;
+                }
+            })
+            .replace(/\$([^$]+)\$/g, (match, p1) => {
+                try {
+                    return renderToString(p1, { throwOnError: false });
+                } catch (error) {
+                    console.error('Error rendering inline LaTeX:', error);
+                    return match;
+                }
+            });
     }
 
     return contentHtml;
