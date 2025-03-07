@@ -9,6 +9,7 @@
     "date-fns": "^2.28.0",
     "gray-matter": "^4.0.3",
     "katex": "^0.16.21",
+    "marked": "^15.0.7",
     "next": "latest",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",

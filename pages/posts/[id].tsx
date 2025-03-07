@@ -4,9 +4,10 @@ import utilStyles from '../../styles/utils.module.css'
 import Layout from '../../components/layout'
 import { getAllPostIds, getPostData } from '../../lib/posts'
 import { GetStaticProps, GetStaticPaths } from 'next'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import 'katex/dist/katex.min.css'
 import { renderToString } from 'katex'
+import { marked } from 'marked'
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
     const postData = await getPostData(params.id as string);
@@ -26,14 +27,19 @@ export const getStaticPaths: GetStaticPaths = async () => {
     };
 }
 
-const renderContent = (contentHtml: string) => {
+const blockLaTeXPattern = /\$\$([\s\S]*?)\$\$/g;
+const inlineLaTeXPattern = /\$([^$]+)\$/g;
+const hasLaTeXPattern = /\$.*?\$|\\\[.*?\\\]|\$\$[\s\S]*?\$\$/m;
+const markdownTablePattern = /\|(.+?)\|/g;
+
+const renderContent = async (contentHtml: string) => {
     // Check for LaTeX delimiters
-    const hasLaTeX = /\$.*?\$|\\\[.*?\\\]|\$\$[\s\S]*?\$\$/m.test(contentHtml);
+    const hasLaTeX = hasLaTeXPattern.test(contentHtml);
 
     if (hasLaTeX) {
         // Render LaTeX using KaTeX
-        return contentHtml
-            .replace(/\$\$([\s\S]*?)\$\$/g, (match, p1) => {
+        contentHtml = contentHtml
+            .replace(blockLaTeXPattern, (match, p1) => {
                 try {
                     return renderToString(p1, { displayMode: true, throwOnError: false });
                 } catch (error) {
@@ -41,7 +47,7 @@ const renderContent = (contentHtml: string) => {
                     return match;
                 }
             })
-            .replace(/\$([^$]+)\$/g, (match, p1) => {
+            .replace(inlineLaTeXPattern, (match, p1) => {
                 try {
                     return renderToString(p1, { throwOnError: false });
                 } catch (error) {
@@ -49,6 +55,12 @@ const renderContent = (contentHtml: string) => {
                     return match;
                 }
             });
+    }
+
+    // Check for Markdown tables
+    if (markdownTablePattern.test(contentHtml)) {
+        // Render Markdown tables using marked
+        contentHtml = await marked(contentHtml);
     }
 
     return contentHtml;
@@ -63,6 +75,16 @@ export default function Post({
         contentHtml: string
     }
 }) {
+    const [renderedContent, setRenderedContent] = useState<string>('');
+
+    useEffect(() => {
+        const render = async () => {
+            const content = await renderContent(postData.contentHtml);
+            setRenderedContent(content);
+        };
+        render();
+    }, [postData.contentHtml]);
+
     return (
         <Layout>
             <Head>
@@ -73,7 +95,7 @@ export default function Post({
                 <div className={utilStyles.lightText}>
                     <Date dateString={postData.date} />
                 </div>
-                <div dangerouslySetInnerHTML={{ __html: renderContent(postData.contentHtml) }} />
+                <div dangerouslySetInnerHTML={{ __html: renderedContent }} />
             </article>
         </Layout>
     )
