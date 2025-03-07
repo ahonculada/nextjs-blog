@@ -9,7 +9,9 @@ The Bell number for a set of size n is the number of ways to partition the set i
 
 The Bell numbers are given by the following recurrence relation:
 
+$$
 B(n+1) = \sum_{k=0}^{n} \binom{n}{k} B(k)
+$$
 
 The first few Bell numbers are:
 
