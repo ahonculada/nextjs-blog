@@ -7,7 +7,6 @@ import { GetStaticProps, GetStaticPaths } from 'next'
 import React, { useEffect, useState } from 'react'
 import 'katex/dist/katex.min.css'
 import { renderToString } from 'katex'
-import { marked } from 'marked'
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
     const postData = await getPostData(params.id as string);
@@ -30,7 +29,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
 const blockLaTeXPattern = /\$\$([\s\S]*?)\$\$/g;
 const inlineLaTeXPattern = /\$([^$]+)\$/g;
 const hasLaTeXPattern = /\$.*?\$|\\\[.*?\\\]|\$\$[\s\S]*?\$\$/m;
-const markdownTablePattern = /\|(.+?)\|/g;
 
 const renderContent = async (contentHtml: string) => {
     // Check for LaTeX delimiters
@@ -55,12 +53,6 @@ const renderContent = async (contentHtml: string) => {
                     return match;
                 }
             });
-    }
-
-    // Check for Markdown tables
-    if (markdownTablePattern.test(contentHtml)) {
-        // Render Markdown tables using marked
-        contentHtml = await marked(contentHtml);
     }
 
     return contentHtml;
