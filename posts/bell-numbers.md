@@ -16,25 +16,23 @@ B(n+1) = \sum_{k=0}^{n} \binom{n}{k} B(k)
 $$
 
 The first few Bell numbers are:
-
-| n  | B(n)         |
-|----|--------------|
-| 0  | 1            |
-| 1  | 1            |
-| 2  | 2            |
-| 3  | 5            |
-| 4  | 15           |
-| 5  | 52           |
-| 6  | 203          |
-| 7  | 877          |
-| 8  | 4140         |
-| 9  | 21147        |
-| 10 | 115975       |
-| 11 | 678570       |
-| 12 | 4213597      |
-| 13 | 27644437     |
-| 14 | 190899322    |
-| 15 | 1382958545   |
+$$
+\begin{array}{c:c}
+\text{n} & \text{B(n)} \\
+\hline
+0 & 1 \\
+1 & 1 \\
+2 & 2 \\
+3 & 5 \\
+4 & 15 \\
+5 & 52 \\
+6 & 203 \\
+7 & 877 \\
+8 & 4140 \\
+9 & 21147 \\
+10 & 115975 \\
+\end{array}
+$$
 
 
 ### Code
@@ -53,3 +51,5 @@ def bell_number(n: int) -> int:
     return bell[n]
 ```
 
+### References
+- [Bell Numbers](https://en.wikipedia.org/wiki/Bell_number)

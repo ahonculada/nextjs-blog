@@ -4,9 +4,8 @@ import utilStyles from '../../styles/utils.module.css'
 import Layout from '../../components/layout'
 import { getAllPostIds, getPostData } from '../../lib/posts'
 import { GetStaticProps, GetStaticPaths } from 'next'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import 'katex/dist/katex.min.css'
-import { renderToString } from 'katex'
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
     const postData = await getPostData(params.id as string);
@@ -26,37 +25,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
     };
 }
 
-const blockLaTeXPattern = /\$\$([\s\S]*?)\$\$/g;
-const inlineLaTeXPattern = /\$([^$]+)\$/g;
-const hasLaTeXPattern = /\$.*?\$|\\\[.*?\\\]|\$\$[\s\S]*?\$\$/m;
-
-const renderContent = async (contentHtml: string) => {
-    // Check for LaTeX delimiters
-    const hasLaTeX = hasLaTeXPattern.test(contentHtml);
-
-    if (hasLaTeX) {
-        // Render LaTeX using KaTeX
-        contentHtml = contentHtml
-            .replace(blockLaTeXPattern, (match, p1) => {
-                try {
-                    return renderToString(p1, { displayMode: true, throwOnError: false });
-                } catch (error) {
-                    console.error('Error rendering block LaTeX:', error);
-                    return match;
-                }
-            })
-            .replace(inlineLaTeXPattern, (match, p1) => {
-                try {
-                    return renderToString(p1, { throwOnError: false });
-                } catch (error) {
-                    console.error('Error rendering inline LaTeX:', error);
-                    return match;
-                }
-            });
-    }
-
-    return contentHtml;
-}
 
 export default function Post({ 
     postData 
@@ -67,16 +35,6 @@ export default function Post({
         contentHtml: string
     }
 }) {
-    const [renderedContent, setRenderedContent] = useState<string>('');
-
-    useEffect(() => {
-        const render = async () => {
-            const content = await renderContent(postData.contentHtml);
-            setRenderedContent(content);
-        };
-        render();
-    }, [postData.contentHtml]);
-
     return (
         <Layout>
             <Head>
@@ -87,7 +45,7 @@ export default function Post({
                 <div className={utilStyles.lightText}>
                     <Date dateString={postData.date} />
                 </div>
-                <div dangerouslySetInnerHTML={{ __html: renderedContent }} />
+                <div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
             </article>
         </Layout>
     )
