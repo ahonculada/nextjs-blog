@@ -5,6 +5,9 @@ import { unified } from 'unified'
 import remarkParse from 'remark-parse'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
+import remarkToc from 'remark-toc'
+import rehypeDocument from 'rehype-document'
+import rehypeSlug from 'rehype-slug'
 import rehypeKatex from 'rehype-katex'
 import rehypeStringify from 'rehype-stringify'
 import remarkRehype from 'remark-rehype'
@@ -81,7 +84,9 @@ export async function getPostData(id: string) {
         .use(remarkParse)
         .use(remarkGfm)
         .use(remarkMath)
+        .use(remarkToc)
         .use(remarkRehype)
+        .use(rehypeSlug)
         .use(rehypeKatex)
         .use(rehypePrettyCode, {
             theme: 'everforest-dark',
@@ -89,6 +94,7 @@ export async function getPostData(id: string) {
                 visibility: 'hover',
             })],
         })
+        .use(rehypeDocument)
         .use(rehypeStringify)
         .process(matterResult.content);
     const contentHtml = processedContent.toString()

@@ -1,14 +1,22 @@
 ---
 title: 'Bell Numbers'  
 date: '2025-03-07'  
+topic: 'number-theory'
 ---
 
-# Bell Numbers
+# Table of Contents
+
+- [Definition](#definition)
+- [Recurrence Relation](#recurrence-relation)
+- [Code](#code)
+- [References](#references)
+
+# Definition
 Bell numbers are a sequence of numbers that are used to count the number of ways to partition a set.
 
 The Bell number for a set of size n is the number of ways to partition the set into non-empty subsets.
 
-## Recurrence Relation
+# Recurrence Relation
 The Bell numbers are given by the following recurrence relation:
 
 $$
@@ -35,7 +43,7 @@ $$
 $$
 
 
-### Code
+# Code
 
 ```python
 from math import comb
@@ -51,5 +59,5 @@ def bell_number(n: int) -> int:
     return bell[n]
 ```
 
-### References
+# References
 - [Bell Numbers](https://en.wikipedia.org/wiki/Bell_number)

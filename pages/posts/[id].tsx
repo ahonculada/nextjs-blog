@@ -5,6 +5,8 @@ import Layout from '../../components/layout'
 import { getAllPostIds, getPostData } from '../../lib/posts'
 import { GetStaticProps, GetStaticPaths } from 'next'
 import React from 'react'
+import Image from 'next/image'
+import { topicMap } from '../../lib/topic-map'
 import 'katex/dist/katex.min.css'
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
@@ -32,6 +34,7 @@ export default function Post({
     postData: {
         title: string
         date: string
+        topic: string
         contentHtml: string
     }
 }) {
@@ -45,6 +48,13 @@ export default function Post({
                 <div className={utilStyles.lightText}>
                     <Date dateString={postData.date} />
                 </div>
+                <Image 
+                    src={`/images/${topicMap[postData.topic]}.jpg`} 
+                    alt={postData.title} 
+                    layout="responsive" 
+                    width={700} 
+                    height={475} 
+                />
                 <div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
             </article>
         </Layout>
