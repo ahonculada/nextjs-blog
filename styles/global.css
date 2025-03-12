@@ -7,6 +7,12 @@ body {
                     sans-serif;
     line-height: 1.6;
     font-size: 18px;
+    background-color: light-dark(white, #444);
+    color: light-dark(#444, white);
+}
+
+:root {
+    color-scheme: dark;
 }
 
 * {
@@ -30,4 +36,5 @@ img {
 pre {
     max-width: 100%; /* Ensures the code block does not exceed the container width */
     overflow-x: auto; /* Adds a horizontal scrollbar if necessary */
+    padding: 1em; /* Adds padding to the edges using relative units */
 }
