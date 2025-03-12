@@ -34,7 +34,7 @@ export default function Post({
     postData: {
         title: string
         date: string
-        topic: string
+        topic?: string
         contentHtml: string
     }
 }) {
@@ -48,13 +48,15 @@ export default function Post({
                 <div className={utilStyles.lightText}>
                     <Date dateString={postData.date} />
                 </div>
-                <Image 
-                    src={`/images/${topicMap[postData.topic]}.jpg`} 
-                    alt={postData.title} 
-                    layout="responsive" 
-                    width={700} 
-                    height={475} 
-                />
+                {postData?.topic && (
+                    <Image 
+                        src={`/images/${topicMap[postData.topic]}.jpg`} 
+                        alt={postData.title} 
+                        layout="responsive" 
+                        width={700} 
+                        height={475} 
+                    />
+                )}
                 <div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
             </article>
         </Layout>
